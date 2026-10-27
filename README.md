@@ -6,14 +6,6 @@ A cute macOS menu bar app that remembers your window layouts and restores them a
   <img src="assets/branding/windowmochi-mascot-v1.png" alt="WindowMochi, a mochi mascot holding two windows" width="320">
 </p>
 
-## Video walkthrough
-
-[![Watch the WindowMochi quick-start video](docs/media/windowmochi-quickstart-poster.png)](docs/media/windowmochi-quickstart.mp4)
-
-**[Watch the English walkthrough](docs/media/windowmochi-quickstart.mp4)** · [Download MP4](docs/media/windowmochi-quickstart.mp4?raw=1) · [Read the transcript](docs/media/windowmochi-quickstart-transcript.md) · [Step subtitles](docs/media/windowmochi-quickstart.srt)
-
-An illustrated guide with English narration covering launch, Accessibility permission, saving and restoring layouts, global shortcuts, language selection, and permission recovery. The screens are illustrations rather than a live recording. Click the preview to open the video; if your GitHub viewer does not play it inline, download the MP4 and open it locally.
-
 ## Requirements
 
 - macOS 13 or later.
@@ -198,13 +190,3 @@ WINDOWMOCHI_SIGNING_IDENTITY="YOUR_CODE_SIGNING_IDENTITY" ./scripts/build.sh
 ```
 
 Use the same identity across builds. Without this variable, the script continues to use ad-hoc signing and warns about permission renewal. The build script does not create certificates, modify your keychain, or change macOS permission settings.
-
-## Rebuild the walkthrough
-
-The illustrated video is generated from the script in this repository. On macOS, with Python 3, Pillow, `ffmpeg`, and `ffprobe` available, run:
-
-```sh
-python3 scripts/make_walkthrough.py
-```
-
-The script uses the built-in `say` command with the Samantha English voice and writes the MP4, poster, step subtitles, and transcript to `docs/media/`. Intermediate files stay in the ignored `.build/` directory. This is optional and is not needed to build or run the app.
