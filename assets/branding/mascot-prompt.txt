@@ -1,0 +1,10 @@
+Generated with the built-in image_gen tool. Transparent PNG, first mascot concept.
+
+Use case: stylized-concept
+Asset type: original brand mascot for WindowMochi, a macOS app that neatly arranges windows across two monitors.
+Primary request: Create a single adorable, distinctive mochi window-helper mascot, full body, isolated on a genuinely transparent background.
+Subject: A soft squishy ivory mochi dumpling with a slightly rounded-square silhouette subtly recalling an app window, tiny rounded arms and feet, two dark expressive dot eyes, a tiny cheerful smile, delicate blush cheeks. A small simple three-dot window-titlebar detail on its forehead makes it recognizable as WindowMochi. It lovingly holds two small rounded rectangular app-window tiles, one larger and one smaller, arranged neatly side by side to express dual-screen organization. Keep these props extremely simple, with no text.
+Style/medium: polished kawaii 3D clay illustration, matte soft rice-dough material, gentle sculpted volume, clean rounded contours, restrained detail, premium friendly desktop utility branding, readable silhouette at small sizes.
+Composition/framing: single centered character, three-quarter front view, all limbs and props fully visible, generous transparent padding, square composition.
+Lighting/mood: soft studio lighting, warm, calm and helpful.
+Constraints: actual alpha transparency; no backdrop, no checkerboard painted into image, no words, no typography, no watermark, no other characters, no busy decorative elements.
