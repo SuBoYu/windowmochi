@@ -1,0 +1,39 @@
+1
+00:00:00,000 --> 00:00:09,042
+Meet WindowMochi
+A little mochi. A tidier desktop.
+
+2
+00:00:09,042 --> 00:00:20,125
+1. Launch the app
+Open WindowMochi.app, then look in the menu bar.
+
+3
+00:00:20,125 --> 00:00:32,458
+2. Allow window control
+System Settings → Privacy & Security → Accessibility
+
+4
+00:00:32,458 --> 00:00:42,875
+3. Save your layout
+Arrange windows on both displays, then save.
+
+5
+00:00:42,875 --> 00:00:53,958
+4. Restore in one click
+Move your windows, then choose your saved layout.
+
+6
+00:00:53,958 --> 00:01:04,042
+5. Switch with shortcuts
+Keep WindowMochi running in the background.
+
+7
+00:01:04,042 --> 00:01:15,792
+6. Choose your language
+Language changes immediately and stays saved.
+
+8
+00:01:15,792 --> 00:01:28,917
+Permission still not working?
+Re-add the exact app you are running.
