@@ -26,6 +26,67 @@ WindowMochi runs in the menu bar; it does not open a regular app window. Click t
 
 The build script compiles the app, creates its mascot icon, and applies a local ad-hoc signature. The app is not notarized by Apple. Rebuilding may require granting Accessibility permission again.
 
+## Run with help from Claude
+
+Use **Claude Code running locally on your Mac** so it can inspect the project and run build and launch commands. Start with the [official Claude Code getting-started guide](https://support.claude.com/en/articles/14552382-your-first-day-in-claude-code) if you have not installed it yet. A regular chat without local command access can explain the steps, but you will need to run the commands yourself.
+
+### First-time setup
+
+Start Claude Code in a local folder where you want to keep the project, then paste this prompt:
+
+```text
+Help me build and run WindowMochi on this Mac:
+https://github.com/SuBoYu/windowmochi
+
+1. Check that this is an Apple Silicon Mac running macOS 13 or later,
+   and that Apple Command Line Tools with Swift 6 are available. If a
+   prerequisite is missing, explain what I need to install and wait
+   for me to finish any system installer.
+2. Reuse an existing local checkout if available. Otherwise, clone the
+   repository into the current folder without overwriting existing files.
+3. Read README.md and scripts/build.sh. Build with ./scripts/build.sh
+   if dist/WindowMochi.app does not exist or I request a rebuild.
+4. Open dist/WindowMochi.app using its absolute path and check whether
+   the process is running. Tell me where to find its menu bar icon.
+5. Guide me through granting Accessibility permission to that exact
+   app in System Settings. Let me make the permission change myself.
+6. Walk me through saving a layout, moving a window, and restoring
+   the layout to verify that window control works.
+
+If something fails, show the relevant error and diagnose it before
+retrying. Do not reset system permissions, delete saved layouts,
+change code, or rebuild an already authorized app unnecessarily.
+```
+
+When macOS asks for Accessibility permission, enable **WindowMochi**, not Claude, for WindowMochi's window-control feature. A running process alone does not confirm that window control works; verify it by saving and restoring a layout.
+
+### Open an app you already built
+
+Start Claude Code in your existing checkout and ask:
+
+```text
+Open the existing dist/WindowMochi.app from this checkout using its
+absolute path, then verify that it is running. Do not rebuild it.
+If it is already running, tell me how to find its menu bar icon.
+```
+
+If Claude cannot find your checkout, give it the local folder path. It can then run:
+
+```sh
+open "/absolute/path/to/windowmochi/dist/WindowMochi.app"
+```
+
+If the Accessibility switch is enabled but window control still fails, ask:
+
+```text
+Help me follow the Accessibility permission troubleshooting section
+in README.md for this exact WindowMochi.app. Show its absolute path
+and guide me through removing and re-adding the old entry myself.
+Do not rebuild the app or reset permissions for other applications.
+```
+
+See [Accessibility permission troubleshooting](#accessibility-permission-troubleshooting) below for the recovery steps. Local ad-hoc rebuilds can invalidate an earlier authorization, so reuse the existing app when you only want to launch it.
+
 ## Save and restore a layout
 
 1. Choose **Grant Accessibility permission…** and enable WindowMochi in **System Settings → Privacy & Security → Accessibility**.
