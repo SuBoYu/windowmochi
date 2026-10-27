@@ -10,7 +10,7 @@
   "quit": "Quit",
   "ok": "OK",
   "allow": "Allow window control",
-  "permission_detail": "Enable WindowMochi in System Settings → Privacy & Security → Accessibility, then save or restore a layout. Restart this app if permission does not take effect.",
+  "permission_detail": "macOS has not authorized this running copy of WindowMochi yet. The system request may still be pending.\n\nOpen System Settings → Privacy & Security → Accessibility. If WindowMochi is already enabled, quit the app, remove the old WindowMochi or WindowHabit entry with the minus button, then use the plus button to add this exact app:\n%@\n\nEnable it and reopen the same app. Local rebuilds can invalidate an earlier authorization even when the switch still appears on.",
   "no_windows": "No windows to save",
   "no_windows_detail": "Open a standard window first. Minimized and full-screen windows are skipped. Check Accessibility permission if needed.",
   "save_count": "Save %d windows",
@@ -31,5 +31,7 @@
   "hotkey_error": "Shortcut unavailable",
   "hotkey_detail": "These shortcuts may be in use by another app: %@. You can still restore layouts from the menu.",
   "about": "About WindowMochi",
-  "about_detail": "Your little mochi helper for a tidy desktop.\nSave window layouts and restore them across screens.\n\nVersion %@"
+  "about_detail": "Your little mochi helper for a tidy desktop.\nSave window layouts and restore them across screens.\n\nVersion %@",
+  "permission_enabled_title": "Accessibility permission is enabled",
+  "permission_enabled_detail": "WindowMochi is authorized to control windows. You can now save or restore a layout."
 }

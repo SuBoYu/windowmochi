@@ -131,9 +131,17 @@ final class App: NSObject, NSApplicationDelegate {
         return true
     }
     @objc func permission() {
+        if AXIsProcessTrusted() {
+            message(L("permission_enabled_title"), L("permission_enabled_detail"))
+            return
+        }
         let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
-        _ = AXIsProcessTrustedWithOptions(options)
-        message(L("allow"), L("permission_detail"))
+        if AXIsProcessTrustedWithOptions(options) {
+            message(L("permission_enabled_title"), L("permission_enabled_detail"))
+        } else {
+            // The system prompt is asynchronous: do not claim that the user has not enabled the switch.
+            message(L("allow"), L("permission_detail", Bundle.main.bundlePath))
+        }
     }
     @objc func snapshot() {
         guard trusted() else { return }

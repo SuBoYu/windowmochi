@@ -33,12 +33,17 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 <key>CFBundleIconFile</key><string>WindowMochi</string>
 <key>CFBundleDevelopmentRegion</key><string>en</string>
 <key>CFBundleLocalizations</key><array><string>en</string><string>zh-Hant</string><string>zh-Hans</string><string>ja</string></array>
-<key>CFBundleVersion</key><string>3</string>
-<key>CFBundleShortVersionString</key><string>0.3.0</string>
+<key>CFBundleVersion</key><string>4</string>
+<key>CFBundleShortVersionString</key><string>0.3.1</string>
 <key>LSMinimumSystemVersion</key><string>13.0</string>
 <key>LSUIElement</key><true/>
 <key>NSHighResolutionCapable</key><true/>
 </dict></plist>
 PLIST
-codesign --force --sign - "$APP"
+# Use a persistent certificate when available; never alter the user's keychain automatically.
+SIGNING_IDENTITY="${WINDOWMOCHI_SIGNING_IDENTITY:--}"
+codesign --force --sign "$SIGNING_IDENTITY" "$APP"
+if [[ "$SIGNING_IDENTITY" == "-" ]]; then
+  printf 'Note: ad-hoc signing ties Accessibility authorization to this build. Re-add the app after rebuilding if needed.\n'
+fi
 printf 'Built: %s\n' "$APP"

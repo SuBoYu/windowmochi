@@ -10,7 +10,7 @@
   "quit": "退出",
   "ok": "确定",
   "allow": "允许调整窗口",
-  "permission_detail": "请在“系统设置 → 隐私与安全性 → 辅助功能”启用 WindowMochi，然后保存或还原布局。若授权未生效，请重启本工具。",
+  "permission_detail": "macOS 尚未授权当前运行的这份 WindowMochi；系统授权请求可能仍在等待处理。\n\n打开“系统设置 → 隐私与安全性 → 辅助功能”。如果开关已启用，请退出 App，用减号移除旧的 WindowMochi 或 WindowHabit 项目，再用加号加入这份 App：\n%@\n\n启用后重新打开同一份 App。本地重新编译可能使旧授权失效，即使开关仍显示开启。",
   "no_windows": "没有可保存的窗口",
   "no_windows_detail": "请先打开普通窗口；最小化与全屏窗口不会保存。若已有普通窗口，请检查辅助功能权限。",
   "save_count": "保存当前 %d 个窗口",
@@ -31,5 +31,7 @@
   "hotkey_error": "无法注册快捷键",
   "hotkey_detail": "以下快捷键可能已被其他程序占用：%@。仍可通过菜单还原布局。",
   "about": "关于 WindowMochi",
-  "about_detail": "帮你整理桌面的麻糬小帮手。\n保存窗口布局，一键还原到各个屏幕。\n\n版本 %@"
+  "about_detail": "帮你整理桌面的麻糬小帮手。\n保存窗口布局，一键还原到各个屏幕。\n\n版本 %@",
+  "permission_enabled_title": "辅助功能权限已开启",
+  "permission_enabled_detail": "WindowMochi 已获准控制窗口，现在可以保存或还原布局。"
 }

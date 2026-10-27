@@ -10,7 +10,7 @@
   "quit": "結束",
   "ok": "確定",
   "allow": "允許調整視窗",
-  "permission_detail": "請在「系統設定 → 隱私權與安全性 → 輔助使用」開啟 WindowMochi，再回來儲存或還原配置。若剛授權後無法使用，請重新啟動此工具。",
+  "permission_detail": "macOS 尚未授權目前執行的這份 WindowMochi；系統授權要求可能仍在等待處理。\n\n開啟「系統設定 → 隱私權與安全性 → 輔助使用」。若開關已啟用，請結束 App，以減號移除舊的 WindowMochi 或 WindowHabit 項目，再用加號加入這份 App：\n%@\n\n啟用後重新開啟同一份 App。本機重新編譯可能使舊授權失效，即使開關仍顯示開啟。",
   "no_windows": "沒有可儲存的視窗",
   "no_windows_detail": "請先開啟一般視窗；最小化與全螢幕視窗不會儲存。若已有一般視窗，請確認輔助使用權限。",
   "save_count": "儲存目前 %d 個視窗",
@@ -31,5 +31,7 @@
   "hotkey_error": "快捷鍵無法註冊",
   "hotkey_detail": "以下快捷鍵可能已被其他程式使用：%@。仍可從選單還原配置。",
   "about": "關於 WindowMochi",
-  "about_detail": "幫你整理桌面的麻糬小幫手。\n儲存視窗配置，一鍵還原到各個螢幕。\n\n版本 %@"
+  "about_detail": "幫你整理桌面的麻糬小幫手。\n儲存視窗配置，一鍵還原到各個螢幕。\n\n版本 %@",
+  "permission_enabled_title": "輔助使用權限已開啟",
+  "permission_enabled_detail": "WindowMochi 已獲准控制視窗，現在可以儲存或還原配置。"
 }

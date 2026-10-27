@@ -104,3 +104,28 @@ Manual checks:
 ## Repository
 
 [SuBoYu/windowmochi](https://github.com/SuBoYu/windowmochi) · [GitHub setup guide](docs/GITHUB_SETUP.md)
+
+## Accessibility permission troubleshooting
+
+If the switch is enabled but window control still fails, the saved authorization may refer to an older build or another copy of the app. Local ad-hoc builds have a hash-based signing requirement that can change after rebuilding. Restarting alone does not repair an authorization for an older signature.
+
+1. Quit WindowMochi, including any older WindowHabit copy.
+2. Open **System Settings → Privacy & Security → Accessibility**.
+3. Remove the old WindowMochi or WindowHabit entry using the minus button.
+4. Use the plus button to add the exact `WindowMochi.app` you intend to run. In the file picker, press **Command + Shift + G** to enter its containing folder.
+5. Enable it and reopen that same app. Do not rebuild between authorizing and reopening it.
+6. Select **Grant Accessibility permission…** to check the current process. An authorized process now shows a success message; otherwise the dialog includes its exact app path.
+
+The permission action previously displayed enable-permission guidance unconditionally, even for authorized processes. A regression check now exercises the actual action with granted and denied trust responses:
+
+```sh
+python3 tests/check_permission_flow.py
+```
+
+For development with a persistent signing certificate already configured on your Mac, build with its identity name or fingerprint:
+
+```sh
+WINDOWMOCHI_SIGNING_IDENTITY="YOUR_CODE_SIGNING_IDENTITY" ./scripts/build.sh
+```
+
+Use the same identity across builds. Without this variable, the script continues to use ad-hoc signing and warns about permission renewal. The build script does not create certificates, modify your keychain, or change macOS permission settings.
