@@ -5,6 +5,13 @@ private final class ShelfDocument: NSView {
     override var isFlipped: Bool { true }
 }
 
+private final class ScreenshotSelection: NSObject {
+    let checkboxes: [NSButton]
+    init(_ checkboxes: [NSButton]) { self.checkboxes = checkboxes; super.init() }
+    @objc func selectAll() { checkboxes.forEach { $0.state = .on } }
+    @objc func deselectAll() { checkboxes.forEach { $0.state = .off } }
+}
+
 private final class ShelfThumbnail: NSImageView, NSDraggingSource {
     let file: URL
     init(file: URL, image: NSImage?) {
@@ -223,9 +230,20 @@ final class ScreenshotShelf: NSObject, NSWindowDelegate {
             let scroll = NSScrollView(frame: NSRect(x: 0, y: 0, width: 480, height: 240)); scroll.hasVerticalScroller = true
             let document = ShelfDocument(frame: NSRect(x: 0, y: 0, width: 460, height: max(240, checks.count * 26)))
             list.frame = document.bounds; list.autoresizingMask = [.width]; document.addSubview(list); scroll.documentView = document
-            let confirm = NSAlert(); confirm.messageText = L("shots_import"); confirm.informativeText = L("shots_import_help", destination.path); confirm.accessoryView = scroll
+            let selection = ScreenshotSelection(checks)
+            let bulk = NSStackView(views: [
+                NSButton(title: L("shots_select_all"), target: selection, action: #selector(ScreenshotSelection.selectAll)),
+                NSButton(title: L("shots_deselect_all"), target: selection, action: #selector(ScreenshotSelection.deselectAll))
+            ])
+            bulk.spacing = 8
+            let accessory = NSStackView(views: [bulk, scroll])
+            accessory.orientation = .vertical; accessory.alignment = .leading; accessory.spacing = 10
+            accessory.frame = NSRect(x: 0, y: 0, width: 480, height: 280)
+            NSLayoutConstraint.activate([scroll.widthAnchor.constraint(equalToConstant: 480), scroll.heightAnchor.constraint(equalToConstant: 240)])
+            let confirm = NSAlert(); confirm.messageText = L("shots_import"); confirm.informativeText = L("shots_import_help", destination.path); confirm.accessoryView = accessory
             confirm.addButton(withTitle: L("cancel")); confirm.addButton(withTitle: L("shots_move"))
-            guard confirm.runModal() == .alertSecondButtonReturn else { return }
+            let response = withExtendedLifetime(selection) { confirm.runModal() }
+            guard response == .alertSecondButtonReturn else { return }
             let selected = zip(candidates, checks).filter { $0.1.state == .on }.map { $0.0 }
             guard !selected.isEmpty else { return }
             busy = true

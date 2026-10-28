@@ -68,5 +68,7 @@
   "shots_move": "移动勾选项目",
   "shots_moved": "已移动：%d\n失败：%d",
   "shots_moving": "正在移动勾选的截图…",
-  "shots_launch_help": "无法打开截屏工具：%@。文件夹路径已复制。请自行按 Command + Shift + 5，再选“选项 → 存储到 → 其他位置”完成设置。"
+  "shots_launch_help": "无法打开截屏工具：%@。文件夹路径已复制。请自行按 Command + Shift + 5，再选“选项 → 存储到 → 其他位置”完成设置。",
+  "shots_select_all": "全选",
+  "shots_deselect_all": "取消全选"
 }

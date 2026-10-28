@@ -68,5 +68,7 @@
   "shots_move": "Move selected",
   "shots_moved": "Moved: %d\nFailed: %d",
   "shots_moving": "Moving selected screenshots…",
-  "shots_launch_help": "Could not open Screenshot: %@. The folder path is copied. Press Command + Shift + 5 yourself, then Options → Save to → Other Location to finish setup."
+  "shots_launch_help": "Could not open Screenshot: %@. The folder path is copied. Press Command + Shift + 5 yourself, then Options → Save to → Other Location to finish setup.",
+  "shots_select_all": "Select all",
+  "shots_deselect_all": "Deselect all"
 }

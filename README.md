@@ -129,7 +129,7 @@ The shelf reads image files from the chosen folder only, without searching subfo
 
 1. Set up the destination folder first.
 2. Click **Organize old Desktop screenshots…** and select your Desktop folder to grant access.
-3. Review the candidate filenames and check only the screenshots you want to move. **Nothing is checked by default.**
+3. Review the candidate filenames. Click **Select all** to check every candidate, **Deselect all** to clear the selection, or check individual files. **Nothing is checked by default.**
 4. Click **Move selected**, or **Cancel** to leave everything in place.
 
 Only regular image files carrying macOS's screenshot metadata flag are offered. Files identified by name alone are not moved, so screenshots that have lost their metadata may need to be moved manually in Finder. The transfer rechecks the flag before moving each file. If a name already exists in the destination, a numbered name keeps both files. Failures are reported per file, and the app does not overwrite existing files or delete unrelated Desktop items. Move files back using Finder if needed. There is no automatic Desktop cleanup.

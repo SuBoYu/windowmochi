@@ -68,5 +68,7 @@
   "shots_move": "選択した画像を移動",
   "shots_moved": "移動済み：%d\n失敗：%d",
   "shots_moving": "選択した画像を移動中…",
-  "shots_launch_help": "スクリーンショットを開けませんでした：%@。パスはコピー済みです。Command + Shift + 5 を押し「オプション → 保存先 → その他の場所」で設定してください。"
+  "shots_launch_help": "スクリーンショットを開けませんでした：%@。パスはコピー済みです。Command + Shift + 5 を押し「オプション → 保存先 → その他の場所」で設定してください。",
+  "shots_select_all": "すべて選択",
+  "shots_deselect_all": "選択を解除"
 }

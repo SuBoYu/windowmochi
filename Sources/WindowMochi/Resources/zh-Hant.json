@@ -68,5 +68,7 @@
   "shots_move": "搬移勾選項目",
   "shots_moved": "已搬移：%d\n失敗：%d",
   "shots_moving": "正在搬移勾選的截圖…",
-  "shots_launch_help": "無法開啟截圖工具：%@。資料夾路徑已複製。請自行按 Command + Shift + 5，再選「選項 → 儲存至 → 其他位置」完成設定。"
+  "shots_launch_help": "無法開啟截圖工具：%@。資料夾路徑已複製。請自行按 Command + Shift + 5，再選「選項 → 儲存至 → 其他位置」完成設定。",
+  "shots_select_all": "全選",
+  "shots_deselect_all": "取消全選"
 }
