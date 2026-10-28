@@ -67,6 +67,7 @@ final class App: NSObject, NSApplicationDelegate {
     var layouts: [Layout] = []
     var hotkeys: Hotkeys?
     var activeIndex: Int?
+    private lazy var screenshots = ScreenshotShelf()
     let file = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("WindowHabit/layouts.json")
     func applicationDidFinishLaunching(_ notification: Notification) {
         if let data = try? Data(contentsOf: file) {
@@ -82,15 +83,19 @@ final class App: NSObject, NSApplicationDelegate {
         rebuild()
         hotkeys = Hotkeys { [weak self] id in
             guard let self = self else { return }
-            if id <= 9 { self.restoreLayout(Int(id) - 1, quiet: true) }
+            if id == 12 { self.screenshots.show() }
+            else if id <= 9 { self.restoreLayout(Int(id) - 1, quiet: true) }
             else { self.cycle(id == 10 ? 1 : -1) }
         }
         let conflicts = hotkeys?.register() ?? []
         if !conflicts.isEmpty { message(L("hotkey_error"), L("hotkey_detail", conflicts.joined(separator: ", "))) }
+        if CommandLine.arguments.contains("--show-screenshots") { screenshots.show() }
     }
     func rebuild() {
         let menu = NSMenu()
         add(L("about"), #selector(about), to: menu)
+        menu.addItem(.separator())
+        add(L("shots_menu"), #selector(showScreenshots), to: menu)
         menu.addItem(.separator())
         add(L("save_current"), #selector(snapshot), to: menu)
         menu.addItem(.separator())
@@ -246,9 +251,10 @@ final class App: NSObject, NSApplicationDelegate {
     }
     @objc func previousLayout() { cycle(-1) }
     @objc func nextLayout() { cycle(1) }
+    @objc func showScreenshots() { screenshots.show() }
     @objc func changeLanguage(_ sender: NSMenuItem) {
         guard let code = sender.representedObject as? String else { return }
-        Localizer.shared.select(code); rebuild()
+        Localizer.shared.select(code); rebuild(); screenshots.languageChanged()
     }
     @objc func openFolder() {
         do { try FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true); NSWorkspace.shared.open(file.deletingLastPathComponent()) }

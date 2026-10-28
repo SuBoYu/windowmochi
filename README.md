@@ -102,6 +102,44 @@ See [Accessibility permission troubleshooting](#accessibility-permission-trouble
 
 Save multiple layouts for different activities. Replacing a layout with the same name requires confirmation and preserves its position in the list.
 
+## Screenshot shelf
+
+Choose **Recent screenshots…** from the mochi menu, or press **Control + Option + Command + S**, to open a separate screenshot panel.
+
+### Keep new screenshots off your Desktop
+
+1. Click **Set up folder** to create `~/Pictures/WindowMochi/Screenshots`, or **Choose folder…** to select another dedicated folder.
+2. Click **Set macOS save location…**, then **Copy path & open Screenshot**.
+3. In the macOS Screenshot toolbar, select a still-image mode and choose **Options → Save to → Other Location…**. Press **Command + Shift + G**, paste the copied folder path, and choose that folder.
+4. Take a screenshot with **Command + Shift + 3 / 4 / 5** and return to the shelf.
+
+**The folder selection in WindowMochi and the macOS save destination are separate settings.** Creating or selecting a folder does not change macOS screenshot preferences automatically. Follow the toolbar steps above to route new captures to that folder. You can return to Desktop or choose another save destination through the same macOS Options menu. See [Apple's screenshot guide](https://support.apple.com/en-us/102646).
+
+### Browse, copy, and drag
+
+- The shelf shows up to **30 images**, newest modification time first, from the selected folder. It refreshes every two seconds while open, after macOS finishes saving the file.
+- Drag a **thumbnail** to Finder, Mail, Slack, or another app that accepts file drops. The drag offers the original file as a copy; the source stays in its folder. Support depends on the receiving app.
+- **Open** launches the image in its default app. **Copy image** puts the image on the clipboard. **Show in Finder** reveals the original file.
+- **Open folder** opens the selected storage folder. **Refresh** immediately rescans it.
+- The selected folder and its access bookmark persist across launches. If access is lost, use **Choose folder…** to select it again.
+
+The shelf reads image files from the chosen folder only, without searching subfolders. Supported extensions are PNG, JPEG, TIFF, HEIC/HEIF, BMP, and GIF. In a shared folder, other images also appear, so a dedicated screenshots folder is recommended. Clipboard-only captures, screen recordings, hidden files, symbolic links, and empty files are not listed. No screen-recording or Accessibility permission is required for browsing files; macOS may ask for folder access.
+
+### Review and organize old Desktop screenshots
+
+1. Set up the destination folder first.
+2. Click **Organize old Desktop screenshots…** and select your Desktop folder to grant access.
+3. Review the candidate filenames and check only the screenshots you want to move. **Nothing is checked by default.**
+4. Click **Move selected**, or **Cancel** to leave everything in place.
+
+Only regular image files carrying macOS's screenshot metadata flag are offered. Files identified by name alone are not moved, so screenshots that have lost their metadata may need to be moved manually in Finder. The transfer rechecks the flag before moving each file. If a name already exists in the destination, a numbered name keeps both files. Failures are reported per file, and the app does not overwrite existing files or delete unrelated Desktop items. Move files back using Finder if needed. There is no automatic Desktop cleanup.
+
+File-operation tests use isolated temporary files and never modify the real Desktop:
+
+```sh
+python3 tests/check_screenshot_library.py
+```
+
 ## Delete a layout
 
 Open the mochi menu, choose **Delete layout…**, then select the layout to remove. Review the confirmation and click **Delete**. **Cancel** is selected by default.
@@ -115,6 +153,7 @@ Deleting a layout removes its saved configuration from disk without moving or cl
 | Control + Option + Command + 1–9 | Restore layouts 1–9 |
 | Control + Option + Command + → | Restore the next layout, wrapping to the first |
 | Control + Option + Command + ← | Restore the previous layout, wrapping to the last |
+| Control + Option + Command + S | Open the screenshot shelf |
 
 Shortcuts work while WindowMochi is running, including when another app is in the foreground. The menu shows layout order and the currently selected layout. Before a layout has been selected, → starts with the first layout and ← starts with the last. Layouts beyond the first nine remain available through the arrow shortcuts and menu.
 
@@ -202,3 +241,15 @@ WINDOWMOCHI_SIGNING_IDENTITY="YOUR_CODE_SIGNING_IDENTITY" ./scripts/build.sh
 ```
 
 Use the same identity across builds. Without this variable, the script continues to use ad-hoc signing and warns about permission renewal. The build script does not create certificates, modify your keychain, or change macOS permission settings.
+
+Screenshot shelf manual verification:
+
+- Finish the macOS save-location setup, capture an image, and verify it appears in the open panel.
+- Drag a thumbnail into Finder and an attachment-capable app, then confirm the source remains intact.
+- Copy an image and paste it into Preview or a document; open it and reveal it in Finder.
+- Restart and confirm the folder selection persists; switch languages with the panel open.
+- Review old Desktop captures, cancel once, then select only a disposable test screenshot and move it.
+- Verify that a duplicate filename keeps both files and unrelated Desktop photos stay untouched.
+- Remove folder access or move the folder; confirm a readable error and recovery through Choose folder.
+
+Screenshot file-operation checks, compilation, and translation coverage can run automatically. Actual file drops into other apps, macOS's save-location selection, and folder permission dialogs require manual verification on the desktop.
