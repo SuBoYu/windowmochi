@@ -6,6 +6,12 @@ A cute macOS menu bar app that remembers your window layouts and restores them a
   <img src="assets/branding/windowmochi-mascot-v1.png" alt="WindowMochi, a mochi mascot holding two windows" width="320">
 </p>
 
+## See it in action
+
+<p align="center">
+  <img src="docs/media/windowmochi-demo.gif" alt="WindowMochi demo: windows scattered across three monitors are saved as a layout, get shuffled, and snap back into place with one shortcut" width="640">
+</p>
+
 ## Requirements
 
 - macOS 13 or later.
