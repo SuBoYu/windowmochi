@@ -33,5 +33,10 @@
   "about": "WindowMochi について",
   "about_detail": "デスクトップを整える、おもちの小さな相棒。\nウィンドウ配置を保存して、画面ごとに復元できます。\n\nバージョン %@",
   "permission_enabled_title": "アクセシビリティ権限は有効です",
-  "permission_enabled_detail": "WindowMochi はウィンドウ操作を許可されています。配置を保存・復元できます。"
+  "permission_enabled_detail": "WindowMochi はウィンドウ操作を許可されています。配置を保存・復元できます。",
+  "delete_layout_menu": "配置を削除…",
+  "delete_layout_title": "「%@」を削除しますか？",
+  "delete_layout_detail": "保存された配置のみを削除します。開いているウィンドウは移動・終了しません。後続の配置が繰り上がり、数字ショートカットの割り当ても変わります。この操作は取り消せません。",
+  "delete_layout_button": "削除",
+  "delete_layout_error": "配置を削除できませんでした"
 }

@@ -33,5 +33,10 @@
   "about": "關於 WindowMochi",
   "about_detail": "幫你整理桌面的麻糬小幫手。\n儲存視窗配置，一鍵還原到各個螢幕。\n\n版本 %@",
   "permission_enabled_title": "輔助使用權限已開啟",
-  "permission_enabled_detail": "WindowMochi 已獲准控制視窗，現在可以儲存或還原配置。"
+  "permission_enabled_detail": "WindowMochi 已獲准控制視窗，現在可以儲存或還原配置。",
+  "delete_layout_menu": "刪除配置…",
+  "delete_layout_title": "刪除「%@」？",
+  "delete_layout_detail": "這只會刪除儲存的配置，不會移動或關閉目前的視窗。後面的配置會往前遞補，對應的數字快捷鍵也會改變。此操作無法復原。",
+  "delete_layout_button": "刪除",
+  "delete_layout_error": "無法刪除配置"
 }

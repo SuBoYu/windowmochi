@@ -102,6 +102,12 @@ See [Accessibility permission troubleshooting](#accessibility-permission-trouble
 
 Save multiple layouts for different activities. Replacing a layout with the same name requires confirmation and preserves its position in the list.
 
+## Delete a layout
+
+Open the mochi menu, choose **Delete layout…**, then select the layout to remove. Review the confirmation and click **Delete**. **Cancel** is selected by default.
+
+Deleting a layout removes its saved configuration from disk without moving or closing any windows. The remaining layouts keep their relative order and shift up, so their number shortcuts may change. Deletion cannot be undone. Accessibility permission is not required to delete a saved layout. If saving the deletion fails, the layout stays available and the app displays an error.
+
 ## Global shortcuts
 
 | Shortcut | Action |

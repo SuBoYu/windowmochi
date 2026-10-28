@@ -33,5 +33,10 @@
   "about": "About WindowMochi",
   "about_detail": "Your little mochi helper for a tidy desktop.\nSave window layouts and restore them across screens.\n\nVersion %@",
   "permission_enabled_title": "Accessibility permission is enabled",
-  "permission_enabled_detail": "WindowMochi is authorized to control windows. You can now save or restore a layout."
+  "permission_enabled_detail": "WindowMochi is authorized to control windows. You can now save or restore a layout.",
+  "delete_layout_menu": "Delete layout…",
+  "delete_layout_title": "Delete “%@”?",
+  "delete_layout_detail": "This removes the saved layout only. Your open windows will stay where they are. Remaining layouts shift up in the list, which changes their number shortcuts. This cannot be undone.",
+  "delete_layout_button": "Delete",
+  "delete_layout_error": "Could not delete layout"
 }

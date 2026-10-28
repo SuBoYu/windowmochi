@@ -33,5 +33,10 @@
   "about": "关于 WindowMochi",
   "about_detail": "帮你整理桌面的麻糬小帮手。\n保存窗口布局，一键还原到各个屏幕。\n\n版本 %@",
   "permission_enabled_title": "辅助功能权限已开启",
-  "permission_enabled_detail": "WindowMochi 已获准控制窗口，现在可以保存或还原布局。"
+  "permission_enabled_detail": "WindowMochi 已获准控制窗口，现在可以保存或还原布局。",
+  "delete_layout_menu": "删除布局…",
+  "delete_layout_title": "删除“%@”？",
+  "delete_layout_detail": "这只会删除保存的布局，不会移动或关闭当前窗口。后面的布局会向前递补，对应的数字快捷键也会改变。此操作无法撤销。",
+  "delete_layout_button": "删除",
+  "delete_layout_error": "无法删除布局"
 }

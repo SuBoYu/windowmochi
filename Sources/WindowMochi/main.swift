@@ -103,6 +103,16 @@ final class App: NSObject, NSApplicationDelegate {
             menu.addItem(row)
         }
         menu.addItem(.separator())
+        if !layouts.isEmpty {
+            let deletions = NSMenu()
+            for (index, layout) in layouts.enumerated() {
+                let row = NSMenuItem(title: layout.name, action: #selector(confirmDeleteLayout(_:)), keyEquivalent: "")
+                row.target = self; row.tag = index; deletions.addItem(row)
+            }
+            let deleteMenu = NSMenuItem(title: L("delete_layout_menu"), action: nil, keyEquivalent: "")
+            deleteMenu.submenu = deletions; menu.addItem(deleteMenu)
+            menu.addItem(.separator())
+        }
         add(L("previous") + "  ⌃⌥⌘←", #selector(previousLayout), to: menu)
         add(L("next") + "  ⌃⌥⌘→", #selector(nextLayout), to: menu)
         let languages = NSMenu()
@@ -171,6 +181,34 @@ final class App: NSObject, NSApplicationDelegate {
             try JSONEncoder().encode(updated).write(to: file, options: .atomic)
             layouts = updated; rebuild()
         } catch { message(L("save_error"), error.localizedDescription) }
+    }
+    @objc func confirmDeleteLayout(_ sender: NSMenuItem) {
+        let index = sender.tag
+        guard layouts.indices.contains(index) else { return }
+        NSApp.activate(ignoringOtherApps: true)
+        let alert = NSAlert()
+        alert.alertStyle = .warning
+        alert.messageText = L("delete_layout_title", layouts[index].name)
+        alert.informativeText = L("delete_layout_detail")
+        // Cancel is the default so Return cannot accidentally confirm deletion.
+        alert.addButton(withTitle: L("cancel"))
+        alert.addButton(withTitle: L("delete_layout_button"))
+        guard alert.runModal() == .alertSecondButtonReturn else { return }
+        do { try deleteLayout(at: index) }
+        catch { message(L("delete_layout_error"), error.localizedDescription) }
+    }
+    func deleteLayout(at index: Int) throws {
+        guard layouts.indices.contains(index) else { return }
+        var updated = layouts
+        updated.remove(at: index)
+        // Commit to disk before changing live state, so a failed write preserves the layout.
+        try JSONEncoder().encode(updated).write(to: file, options: .atomic)
+        layouts = updated
+        if let active = activeIndex {
+            if active == index { activeIndex = nil }
+            else if active > index { activeIndex = active - 1 }
+        }
+        rebuild()
     }
     @objc func restore(_ sender: NSMenuItem) {
         restoreLayout(sender.tag)
