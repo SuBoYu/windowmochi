@@ -11,6 +11,13 @@ struct Placement: Codable {
     var y: Double
     var width: Double
     var height: Double
+    // Optional fields preserve decoding of existing snapshots.
+    var windowIdentifier: String? = nil
+    var displayName: String? = nil
+    var displayVendor: UInt32? = nil
+    var displayModel: UInt32? = nil
+    var displaySerial: UInt32? = nil
+    var coordinateSpace: String? = nil
 }
 struct Layout: Codable {
     var name: String
@@ -21,6 +28,11 @@ struct Display {
     var bounds: CGRect
     var key: String { CGDisplayCreateUUIDFromDisplayID(id).map { CFUUIDCreateString(nil, $0.takeRetainedValue()) as String } ?? String(id) }
     var builtIn: Bool { CGDisplayIsBuiltin(id) != 0 }
+    var restoreScreen: RestoreScreen {
+        let screen = NSScreen.screens.first { ($0.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber)?.uint32Value == id }
+        let visible = screen.map { LayoutRestore.visibleFrame(appKitFrame: $0.frame, appKitVisible: $0.visibleFrame, quartzBounds: bounds) } ?? bounds
+        return RestoreScreen(key: key, builtIn: builtIn, bounds: bounds, visible: visible, name: screen?.localizedName ?? "", vendor: CGDisplayVendorNumber(id), model: CGDisplayModelNumber(id), serial: CGDisplaySerialNumber(id))
+    }
 }
 struct Window {
     var element: AXUIElement
@@ -28,11 +40,19 @@ struct Window {
     var title: String
     var index: Int
     var rect: CGRect
+    var identifier: String? = nil
 }
 func attribute(_ element: AXUIElement, _ name: String) -> CFTypeRef? {
     var result: CFTypeRef?
     guard AXUIElementCopyAttributeValue(element, name as CFString, &result) == .success else { return nil }
     return result
+}
+func readWindowRect(_ element: AXUIElement) -> CGRect? {
+    guard let p = attribute(element, kAXPositionAttribute), CFGetTypeID(p) == AXValueGetTypeID(),
+          let s = attribute(element, kAXSizeAttribute), CFGetTypeID(s) == AXValueGetTypeID() else { return nil }
+    var point = CGPoint.zero, size = CGSize.zero
+    guard AXValueGetValue(p as! AXValue, .cgPoint, &point), AXValueGetValue(s as! AXValue, .cgSize, &size) else { return nil }
+    return CGRect(origin: point, size: size)
 }
 func displays() -> [Display] {
     NSScreen.screens.compactMap { screen in
@@ -56,7 +76,7 @@ func windows() -> [Window] {
             var point = CGPoint.zero
             var size = CGSize.zero
             guard AXValueGetValue(p as! AXValue, .cgPoint, &point), AXValueGetValue(s as! AXValue, .cgSize, &size), size.width > 0, size.height > 0 else { continue }
-            result.append(Window(element: element, bundle: bundle, title: attribute(element, kAXTitleAttribute) as? String ?? "", index: index, rect: CGRect(origin: point, size: size)))
+            result.append(Window(element: element, bundle: bundle, title: attribute(element, kAXTitleAttribute) as? String ?? "", index: index, rect: CGRect(origin: point, size: size), identifier: attribute(element, "AXIdentifier") as? String))
         }
     }
     return result
@@ -67,6 +87,7 @@ final class App: NSObject, NSApplicationDelegate {
     var layouts: [Layout] = []
     var hotkeys: Hotkeys?
     var activeIndex: Int?
+    var isRestoring = false
     private lazy var screenshots = ScreenshotShelf()
     let file = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("WindowHabit/layouts.json")
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -159,12 +180,14 @@ final class App: NSObject, NSApplicationDelegate {
         }
     }
     @objc func snapshot() {
+        guard !isRestoring else { NSSound.beep(); return }
         guard trusted() else { return }
         let screens = displays()
         let saved = windows().compactMap { window -> Placement? in
             guard let screen = screens.max(by: { $0.bounds.intersection(window.rect).area < $1.bounds.intersection(window.rect).area }) else { return nil }
-            let r = window.rect, b = screen.bounds
-            return Placement(bundle: window.bundle, title: window.title, index: window.index, display: screen.key, builtIn: screen.builtIn, x: (r.minX-b.minX)/b.width, y: (r.minY-b.minY)/b.height, width: r.width/b.width, height: r.height/b.height)
+            let info = screen.restoreScreen
+            let r = window.rect, b = info.visible
+            return Placement(bundle: window.bundle, title: window.title, index: window.index, display: screen.key, builtIn: screen.builtIn, x: (r.minX-b.minX)/b.width, y: (r.minY-b.minY)/b.height, width: r.width/b.width, height: r.height/b.height, windowIdentifier: window.identifier, displayName: info.name, displayVendor: info.vendor, displayModel: info.model, displaySerial: info.serial, coordinateSpace: "visible-v1")
         }
         guard !saved.isEmpty else { message(L("no_windows"), L("no_windows_detail")); return }
         NSApp.activate(ignoringOtherApps: true)
@@ -188,6 +211,7 @@ final class App: NSObject, NSApplicationDelegate {
         } catch { message(L("save_error"), error.localizedDescription) }
     }
     @objc func confirmDeleteLayout(_ sender: NSMenuItem) {
+        guard !isRestoring else { NSSound.beep(); return }
         let index = sender.tag
         guard layouts.indices.contains(index) else { return }
         NSApp.activate(ignoringOtherApps: true)
@@ -219,30 +243,46 @@ final class App: NSObject, NSApplicationDelegate {
         restoreLayout(sender.tag)
     }
     func restoreLayout(_ layoutIndex: Int, quiet: Bool = false) {
-        guard layouts.indices.contains(layoutIndex), trusted() else { return }
-        let screens = displays(); guard let fallback = screens.first(where: { $0.builtIn }) ?? screens.first else { return }
-        var available = windows(), restored = 0, missing = 0, failed = 0
-        for saved in layouts[layoutIndex].windows {
-            let candidates = available.indices.filter { available[$0].bundle == saved.bundle }
-            guard let index = candidates.first(where: { available[$0].title == saved.title && available[$0].index == saved.index }) ?? candidates.first(where: { available[$0].title == saved.title }) ?? candidates.first(where: { available[$0].index == saved.index }) ?? candidates.first else { missing += 1; continue }
-            let window = available.remove(at: index)
-            let screen = screens.first(where: { $0.key == saved.display }) ?? (saved.builtIn ? screens.first(where: { $0.builtIn }) : nil) ?? fallback
-            let b = screen.bounds
-            // Keep restored windows within the usable desktop, including menu bar and Dock.
-            let visible: CGRect = NSScreen.screens.first(where: { ($0.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber)?.uint32Value == screen.id }).map { s in
-                let top = NSScreen.screens.first(where: { ($0.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber)?.uint32Value == CGMainDisplayID() })?.frame.maxY ?? 0
-                return CGRect(x: s.visibleFrame.minX, y: top-s.visibleFrame.maxY, width: s.visibleFrame.width, height: s.visibleFrame.height)
-            } ?? b
-            var size = CGSize(width: min(max(100, saved.width*b.width), visible.width), height: min(max(80, saved.height*b.height), visible.height))
-            var point = CGPoint(x: max(visible.minX, min(b.minX+saved.x*b.width, visible.maxX-size.width)), y: max(visible.minY, min(b.minY+saved.y*b.height, visible.maxY-size.height)))
-            let p = AXValueCreate(.cgPoint, &point)!, s = AXValueCreate(.cgSize, &size)!
-            _ = AXUIElementSetAttributeValue(window.element, kAXSizeAttribute as CFString, s)
-            let positionResult = AXUIElementSetAttributeValue(window.element, kAXPositionAttribute as CFString, p)
-            let sizeResult = AXUIElementSetAttributeValue(window.element, kAXSizeAttribute as CFString, s)
-            if positionResult == .success && sizeResult == .success { restored += 1 } else { failed += 1 }
+        guard !isRestoring, layouts.indices.contains(layoutIndex), trusted() else { return }
+        let screens = displays().map(\.restoreScreen)
+        guard !screens.isEmpty else { return }
+        let saved = layouts[layoutIndex].windows
+        let available = windows()
+        let mapping = LayoutRestore.mapDisplays(saved, to: screens)
+        let matches = LayoutRestore.matchWindows(saved, to: available.map { RestoreWindow(bundle: $0.bundle, title: $0.title, index: $0.index, identifier: $0.identifier) })
+        var targets: [RestoreTarget] = []
+        for savedIndex in saved.indices {
+            guard let windowIndex = matches[savedIndex], let screen = mapping.screens[saved[savedIndex].display],
+                  let rect = LayoutRestore.target(saved[savedIndex], on: screen) else { continue }
+            targets.append(RestoreTarget(windowIndex: windowIndex, rect: rect, visible: screen.visible))
         }
-        activeIndex = layoutIndex; rebuild()
-        if !quiet || missing > 0 || failed > 0 { message(L("restored"), L("report", restored, missing, failed)) }
+        let missing = saved.count - matches.count
+        let invalid = matches.count - targets.count
+        isRestoring = true
+        RestoreRunner(targets: targets, apply: { target in
+            let element = available[target.windowIndex].element
+            var size = target.rect.size
+            let value = AXValueCreate(.cgSize, &size)!
+            _ = AXUIElementSetAttributeValue(element, kAXSizeAttribute as CFString, value)
+            // If an app enforces a minimum size, keep even that larger window on screen.
+            let actual = readWindowRect(element)?.size ?? size
+            var point = LayoutRestore.clampedOrigin(target.rect.origin, size: actual, visible: target.visible)
+            let position = AXValueCreate(.cgPoint, &point)!
+            _ = AXUIElementSetAttributeValue(element, kAXPositionAttribute as CFString, position)
+            _ = AXUIElementSetAttributeValue(element, kAXSizeAttribute as CFString, value)
+        }, read: { index in readWindowRect(available[index].element) }, completion: { [weak self] restored, failures in
+            guard let self = self else { return }
+            self.isRestoring = false
+            if restored > 0 { self.activeIndex = layoutIndex }
+            self.rebuild()
+            let failed = failures + invalid
+            let changedDisplays = !mapping.remapped.isEmpty || !mapping.unavailable.isEmpty
+            if !quiet || missing > 0 || failed > 0 || changedDisplays {
+                var detail = L("report", restored, missing, failed)
+                if changedDisplays { detail += "\n\n" + L("restore_displays", mapping.remapped.count, mapping.unavailable.count) }
+                self.message(L("restored"), detail)
+            }
+        }).start()
     }
     func cycle(_ direction: Int) {
         guard !layouts.isEmpty else { return }

@@ -21,8 +21,8 @@
   "overwrite_title": "覆蓋「%@」？",
   "overwrite": "覆蓋",
   "save_error": "儲存失敗",
-  "restored": "配置還原完成",
-  "report": "已送出調整：%d 個視窗\n未找到：%d 個\nApp 拒絕調整：%d 個\n\n尚未開啟的 App 不會自動啟動。部分 App 有最小視窗尺寸，或會自行調整位置。",
+  "restored": "配置還原結果",
+  "report": "已確認還原：%d 個視窗\n未找到：%d 個\n無法確認位置或大小：%d 個\n\n不會啟動已關閉的 App。部分 App 有最小尺寸限制或拒絕移動；若螢幕仍在切換，請待配置穩定後再試。",
   "folder_error": "無法開啟資料夾",
   "language": "語言",
   "system": "跟隨系統",
@@ -70,5 +70,6 @@
   "shots_moving": "正在搬移勾選的截圖…",
   "shots_launch_help": "無法開啟截圖工具：%@。資料夾路徑已複製。請自行按 Command + Shift + 5，再選「選項 → 儲存至 → 其他位置」完成設定。",
   "shots_select_all": "全選",
-  "shots_deselect_all": "取消全選"
+  "shots_deselect_all": "取消全選",
+  "restore_displays": "已重新配對的螢幕：%d\n缺少或無法明確配對的螢幕：%d\n\n只有一台可用外接螢幕時，會承接缺少的外接位置；無法配對的螢幕則使用內建或主螢幕。請確認位置後，再儲存此環境的配置。"
 }

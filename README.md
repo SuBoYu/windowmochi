@@ -184,8 +184,8 @@ The file contains app identifiers, window titles, display identifiers, and windo
 ## Behavior and limitations
 
 - Only open, non-minimized, non-full-screen standard windows are included. Closed apps are not launched automatically.
-- Displays are matched by UUID, and geometry is restored using relative positions and sizes. If a display is missing, windows fall back to the built-in display, or another available display.
-- Windows are matched within each app using titles and window order. Changed titles, duplicate titles, or reordered windows can make matching ambiguous.
+- Displays are matched by UUID first, then mutually unique hardware identity. If one saved external role and one unused external display remain, they are paired. Missing or ambiguous displays fall back to the built-in or primary screen, with a report.
+- Windows are matched within each app using unique Accessibility identifiers when available, then exact titles, then window order. Strong matches are reserved before fallback matching. Duplicate titles and missing identifiers can still make matching ambiguous; unresolved windows are reported instead of assigned arbitrarily.
 - The app does not switch Spaces or recreate browser tabs.
 - Some apps enforce minimum window sizes, adjust positions themselves, or reject Accessibility operations.
 - Automatic restoration on display connection, launch at login, and customizable shortcuts are not yet included.
@@ -253,3 +253,29 @@ Screenshot shelf manual verification:
 - Remove folder access or move the folder; confirm a readable error and recovery through Choose folder.
 
 Screenshot file-operation checks, compilation, and translation coverage can run automatically. Actual file drops into other apps, macOS's save-location selection, and folder permission dialogs require manual verification on the desktop.
+
+## Restoring layouts at work and home
+
+Save a separate named layout for each setup, such as **Work** and **Home**, and select the corresponding layout after macOS finishes arranging the connected displays. WindowMochi does not automatically select a profile based on location.
+
+Version 0.6.0 fixes two reproducible problems: an unmatched external-display UUID previously sent windows straight to the laptop display even when another external display was available, and an early index fallback could consume a window needed by a later exact-title match.
+
+The restore flow now:
+
+- Reserves exact display UUID matches, then uses unique hardware metadata when available. A single unmatched external role can use a single unused external display. Multiple ambiguous displays are reported and fall back to the built-in or primary screen.
+- Reserves unique AX identifiers and exact window titles across the whole layout before trying window-order fallback.
+- Reads actual window position and size after applying changes, retries up to three times, and reports a window as restored only if its geometry is within four logical points of the target.
+- Stores new snapshots relative to the usable desktop area so the menu bar and Dock are accounted for. Existing snapshots retain their original full-display coordinates and remain readable.
+
+Existing layout files are not rewritten during restoration. After checking the arrangement in each environment, save that layout again to add hardware metadata and usable-area coordinates. Old layouts can still benefit from the external-role fallback without being resaved.
+
+Some apps have minimum sizes, apply changes slowly, or do not provide stable window identifiers. Full-screen/minimized windows and closed apps remain outside the restore set. Switching Spaces is not supported. A changed title plus a changed window order may still require manual correction when no unique identifier exists. A restore report distinguishes verified moves, missing windows, geometry that could not be verified, and remapped or unavailable displays.
+
+Deterministic regression checks use simulated displays and windows; they do not move real windows or change saved layouts:
+
+```sh
+python3 tests/check_layout_restore.py
+python3 tests/check_restore_rules.py
+```
+
+The tests cover external reconnection, changed-title matching, negative display origins, Dock/menu-bar offsets, legacy snapshots, ambiguous monitors, minimum-size refusal, and delayed window updates. Actual work/home hardware transitions still require verification on both setups.

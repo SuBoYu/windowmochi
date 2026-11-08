@@ -21,8 +21,8 @@
   "overwrite_title": "覆盖“%@”？",
   "overwrite": "覆盖",
   "save_error": "保存失败",
-  "restored": "布局还原完成",
-  "report": "已发送调整：%d 个窗口\n未找到：%d 个\nApp 拒绝调整：%d 个\n\n不会自动启动未打开的 App。部分 App 限制最小尺寸或自行调整位置。",
+  "restored": "布局还原结果",
+  "report": "已确认还原：%d 个窗口\n未找到：%d 个\n无法确认位置或大小：%d 个\n\n不会启动已关闭的 App。部分 App 有最小尺寸限制或拒绝移动；若屏幕仍在切换，请待配置稳定后重试。",
   "folder_error": "无法打开文件夹",
   "language": "语言",
   "system": "跟随系统",
@@ -70,5 +70,6 @@
   "shots_moving": "正在移动勾选的截图…",
   "shots_launch_help": "无法打开截屏工具：%@。文件夹路径已复制。请自行按 Command + Shift + 5，再选“选项 → 存储到 → 其他位置”完成设置。",
   "shots_select_all": "全选",
-  "shots_deselect_all": "取消全选"
+  "shots_deselect_all": "取消全选",
+  "restore_displays": "已重新匹配的屏幕：%d\n缺少或无法明确匹配的屏幕：%d\n\n只有一台可用外接屏幕时，会承接缺少的外接位置；无法匹配的屏幕则使用内置或主屏幕。请确认位置后，再保存此环境的布局。"
 }

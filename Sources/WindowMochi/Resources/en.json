@@ -21,8 +21,8 @@
   "overwrite_title": "Replace “%@”?",
   "overwrite": "Replace",
   "save_error": "Save failed",
-  "restored": "Layout restored",
-  "report": "Adjustment requests sent: %d\nNot found: %d\nRejected by app: %d\n\nClosed apps are not launched. Some apps enforce minimum sizes or adjust their own positions.",
+  "restored": "Layout restore result",
+  "report": "Verified restored windows: %d\nNot found: %d\nCould not verify position or size: %d\n\nClosed apps are not launched. Apps may enforce minimum sizes or reject moves. If a window is still moving, try again after the display setup settles.",
   "folder_error": "Cannot open folder",
   "language": "Language",
   "system": "Follow system",
@@ -70,5 +70,6 @@
   "shots_moving": "Moving selected screenshots…",
   "shots_launch_help": "Could not open Screenshot: %@. The folder path is copied. Press Command + Shift + 5 yourself, then Options → Save to → Other Location to finish setup.",
   "shots_select_all": "Select all",
-  "shots_deselect_all": "Deselect all"
+  "shots_deselect_all": "Deselect all",
+  "restore_displays": "Remapped displays: %d\nUnavailable or ambiguous displays: %d\n\nA single available external display is used for a missing external role. Unresolved displays fall back to the built-in or primary screen. Check the positions before saving this setup again."
 }
